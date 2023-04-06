@@ -1,8 +1,8 @@
 import os
 from utils import filters
-
+from typing import Dict
 from flask_restx import Resource, Namespace, Api
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, Response
 
 app = Flask(__name__)
 
@@ -16,14 +16,14 @@ api.add_namespace(data_ns)
 
 @data_ns.route("/")
 class PerformQuery(Resource):
-    def post(self):
-        response = request.json
-        filename = response["file_name"]
-        cmd1 = response["cmd1"]
-        value1 = response["value1"]
-        cmd2 = response["cmd2"]
-        value2 = response["value2"]
-        with open(f'data/{filename}.txt', 'r', encoding='utf-8') as file:
+    def post(self) -> Response:
+        response: Dict[str, str] = request.json
+        filename: str = response["file_name"]
+        cmd1: str = response["cmd1"]
+        value1: str = response["value1"]
+        cmd2: str = response["cmd2"]
+        value2: str = response["value2"]
+        with open(f'data/{filename}', 'r', encoding='utf-8') as file:
             data = file.readlines()
 
         res = filters(file=data, cmd=cmd1, value=value1)
